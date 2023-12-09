@@ -113,6 +113,9 @@ protected:
         ResizeNorthEastCursor,
         ResizeSouthWestCursor,
 
+        VerticalText,
+        Grabbing,
+
         NumWaylandCursors
     };
 

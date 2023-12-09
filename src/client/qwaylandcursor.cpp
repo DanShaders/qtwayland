@@ -196,6 +196,9 @@ wl_cursor *QWaylandCursorTheme::requestCursor(WaylandCursor shape)
 
         {ResizeSouthWestCursor, "sw-resize"},
         {ResizeSouthWestCursor, "bottom_left_corner"},
+
+        {VerticalText, "vertical-text"},
+        {Grabbing, "grabbing"}
     };
 
     const auto byShape = [](ShapeAndName lhs, ShapeAndName rhs) {
@@ -223,7 +226,7 @@ wl_cursor *QWaylandCursorTheme::requestCursor(WaylandCursor shape)
 {
     struct wl_cursor *waylandCursor = nullptr;
 
-    if (shape < Qt::BitmapCursor) {
+    if (shape != Qt::BitmapCursor) {
         waylandCursor = requestCursor(WaylandCursor(shape));
     } else if (shape == Qt::BitmapCursor) {
         qCWarning(lcQpaWayland) << "cannot create a wl_cursor_image for a CursorShape";

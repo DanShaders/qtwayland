@@ -67,6 +67,7 @@
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatforminputcontext.h>
 #include <QDebug>
+#include <QHash>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -78,6 +79,8 @@
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QPointingDevice>
+
+#include <iostream>
 
 QT_BEGIN_NAMESPACE
 
@@ -317,6 +320,31 @@ void QWaylandInputDevice::Pointer::updateCursor()
         if (mCursor.surface)
             mCursor.surface->hide();
         return;
+    }
+
+    if (shape == Qt::BitmapCursor) {
+        auto* buffer = seat()->mCursor.bitmapBuffer.get();
+        if (auto shm_buffer = dynamic_cast<QWaylandShmBuffer*>(buffer)) {
+            auto hash = qHashBits(shm_buffer->image()->bits(), size_t(shm_buffer->image()->sizeInBytes()));
+            std::cout << "Bitmap hash: " << hash << std::endl;
+            if (hash == 7424520633001250067ULL) {
+                std::cout << " -> replacing with vertical-text" << std::endl;
+                shape = static_cast<Qt::CursorShape>(34);
+            } else if (hash == 12270329734938056226ULL) {
+                std::cout << " -> replacing with grabbing" << std::endl;
+                shape = static_cast<Qt::CursorShape>(35);
+            } else if (hash == 17224320479079770365ULL) {
+                std::cout << " -> replacing with vertical-text" << std::endl;
+                shape = Qt::CursorShape::ArrowCursor;
+            } else if (hash == 1955863912897206472ULL) {
+                std::cout << " -> replacing with grabbing" << std::endl;
+                shape = static_cast<Qt::CursorShape>(35);
+            } else {
+                std::cout << " -> no matches found, passing through" << std::endl;
+            }
+        } else {
+            std::cout << "Cursor bitmap is not backed up by QWaylandShmBuffer, passing through" << std::endl;
+        }
     }
 
     if (shape == Qt::BitmapCursor) {
