@@ -339,6 +339,9 @@ void QWaylandInputDevice::Pointer::updateCursor()
             } else if (hash == 1955863912897206472ULL) {
                 std::cout << " -> replacing with grabbing" << std::endl;
                 shape = static_cast<Qt::CursorShape>(35);
+            } else if (hash == 16793382731083074882ULL) {
+                std::cout << " -> replacing with w-resize" << std::endl;
+                shape = static_cast<Qt::CursorShape>(29);
             } else {
                 std::cout << " -> no matches found, passing through" << std::endl;
             }
